@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<div>
+		<p id="fullName">Full Name: </p>
+		<p id='type'>Account type: </p>
+		<p id="nickname">User:</p>
+		<p id="balance">Balance:</p>
+		<p id="rewards">Rewards:</p>
+		
+	</div>
+<script type="text/javascript">
+	var url = "http://api.reimaginebanking.com/accounts/5ab6a77af0cec56abfa403d6?key=d2e249d455165a2e90f6131d49fe3345";
+  var xhr;
+  if(window.XMLHttpRequest)
+  {
+    xhr = new XMLHttpRequest();
+
+  }
+  else
+  {
+    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhr.open('GET', url, true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function()
+  {
+  	if(xhr.status == 200 && xhr.readyState == 4){
+  		 var arr = xhr.responseText;
+  		 arr = JSON.parse(arr);
+  		 var length = Object.keys(arr).length;
+  		 var data = ['nickname', 'type', 'accountnumber', 'rewards', 'balance']
+  		 for(var i = 0; i < length; i++){
+  		 	if(data.indexOf(Object.keys(arr)[i]) != -1){
+  		 		//console.log(Object.keys(arr)[i] + " " + arr[Object.keys(arr)[i]]); //gets the keys
+  		 		document.getElementById(Object.keys(arr)[i]).textContent += " " + arr[Object.keys(arr)[i]];
+  		 	}
+  		 	
+  		 }
+  		//get first and last name of user
+  	
+
+
+  	}
+  }
+  xhr.send();
+
+  var xhr2;
+  var curl = "http://api.reimaginebanking.com/accounts/5ab6a77af0cec56abfa403d6/customer?key=d2e249d455165a2e90f6131d49fe3345";
+  if(window.XMLHttpRequest)
+  {
+    xhr2 = new XMLHttpRequest();
+
+  }
+  else
+  {
+    xhr2 = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhr2.open('GET', curl, true);
+  xhr2.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr2.onreadystatechange = function()
+  {
+  	if(xhr2.status == 200 && xhr2.readyState == 4){
+  		 var arr = xhr2.responseText;
+  		 arr = JSON.parse(arr);
+  		 var length = Object.keys(arr).length;
+  		var fullName = arr['first_name'] + " "+ arr['last_name'];
+  		document.getElementById("fullName").textContent += " "+fullName;
+
+  	}
+  }
+  xhr2.send();
+</script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+
+<html>
+<head>
+  <title>SaveStaks</title>
+  <!-- Nessie Required Files -->
+  <script data-main="lib/capital_one" src="lib/require-jquery.js"></script>
+
+  <link rel="stylesheet" type = "text/css" href="SaveStaks.css">
+
+</head>
+<body>
+  <div id="accountData">
+    <h4 id="firstNameLastName"></h4>
+    <h4 id="username"></h4>
+    <h4 id="balance"></h4>
+    <h4 id="biWeeklySalary"></h4>
+    <h4 id="dailySalaryAverage"></h4>
+  </div>
+
+  <div id="centerPage">
+    <h1 id="webTitle">S A V E     S T A K S</h1>
+    <h4 id= "currentSavings">CURRENT SAVINGS</h4>
+    <h4 id= "currentSavingsNumber"></h4>
+    <div id="goalData">
+      <h4 id="savingsGoal"></h4>
+      <h4 id="dailySavingsGoal"></h4>
+      <h4 id="currentDailySavingsAvg"></h4>
+      <h4 id="dailySpendingLimit"></h4>
+      <h4 id="currentDailySpendingAvg"></h4>
+    </div>
+  </div>
+
+  <form id="createGoalForm">
+    <h3>Create Goal</h3>
+    <label for="goal">Goal Amount to Save: </label>
+    <input name="goal" id="goal" type="text" placeholder="$" /><br>
+
+    <label for="startDate">Start Date: </label>
+    <input name="startDate" id="startDate" type="text" placeholder="yyyy-mm-dd" /><br>
+
+    <label for="endDate">End Date: </label>
+    <input name="endDate" id="endDate" type="text" placeholder="yyyy-mm-dd" /><br>
+
+    <label for="biWeekSalary">Bi-Weekly Salary: </label>
+    <input name="biWeekSalary" id="biWeekSalary" type="text" placeholder="$" /><br>
+
+    <button id="createGoalButton">Create Goal</button>
+  </form>
+
+  <form id="paymentForm">
+    <h3>Make Payment</h3>
+    <label for="price">Cost of Item: </label>
+    <input name="price" id="price" type="text" placeholder="$" /><br>
+
+    <label for="paymentDate">Date of Purchase:</label>
+    <input id="paymentDate" name="paymentDate" type="text" placeholder="yyyy-mm-dd" /><br>
+   
+    <label for="merchant">Merchant</label>
+    <select id="merchants" name="merchants">
+      <option>Walmart</option>
+    </select><br>
+
+    <button id="purchaseButton">Make Purchase</button>
+  </form>
+
+  <script type="text/javascript">
+    // Set API key here!
+
+    var apiKey = '00e5eaabe90e2e82f3379860987ed3d3';
+
+    var username = "Jared";
+    var customerFirstName = "Jared";
+    var customerLastName = "Blumen";
+    var balance = 50000;
+    var accountId = "5ab6a778f0cec56abfa403d5";
+    var merchantId = "5ab6a8eef0cec56abfa403d7";
+    var purchaseAmount = 0;
+    var purchaseDate = "";
+
+    var salary = 7000; //document.getElementById("salary").value - php
+    var dailySalary = salary/14;
+    var savingsGoal = 5000;
+    var currentSavings = 0;
+    var currentDailySavings = 0;
+
+    var startDate = "2018-3-30";
+    var currentDate = purchaseDate;
+    var goalDate = "2018-5-21";
+
+    Date.daysBetween = function( date1, date2 ) {   //Get 1 day in milliseconds   
+      dateOne = new Date(date1);
+      dateTwo = new Date(date2);
+      var one_day=1000*60*60*24;    // Convert both dates to milliseconds
+      var date1_ms = dateOne.getTime();   
+      var date2_ms = dateTwo.getTime();    // Calculate the difference in milliseconds  
+      var difference_ms = date2_ms - date1_ms;        // Convert back to days and return   
+      return Math.round(difference_ms/one_day);
+    }
+
+    var totalDays = Date.daysBetween(startDate, goalDate);
+    var dailySavingsGoal = savingsGoal/totalDays;
+    var dailyPurchases = [];
+    var totalPurchaseAmount = 0;
+
+  $(function(){
+
+      require(['purchase'], function (purchase) {
+
+        var pur = purchase.initWithKey(apiKey);
+        getPurchase(apiKey, pur);
+        getTotalSavings();
+        printData();
+      
+      });
+    
+
+    })
+
+  $("#purchaseButton").click(function() {
+    
+    purchaseAmount = $("#price").val();
+    purchaseDate = $("#paymentDate").val();
+
+      require(['purchase'], function (purchase) {
+
+        var pur = purchase.initWithKey(apiKey);
+
+        if (purchaseDate != null)
+        {
+           postPurchase(apiKey, pur);
+        }
+      });
+
+      return true;
+    })
+
+    function postPurchase(key, pur) {
+      var newPurchaseDetails = "{\"merchant_id\": \"" + merchantId + "\", \"medium\": \"balance\", \"purchase_date\": \"" + purchaseDate + "\", \"amount\":" + purchaseAmount + ", \"status\": \"pending\", \"description\": \"food\" }";
+
+      var responseCode = pur.createPurchase("5ab6a778f0cec56abfa403d5", newPurchaseDetails);
+
+      console.log("[Purchase - Create Purchase] Response Code: " + responseCode);
+      $('#postPurchase').html("Create Purchase: Response Code <b>" + responseCode + "</b>");
+    }
+
+    function getPurchase(key, pur) {
+      var allPurchases = pur.getAll("5ab6a778f0cec56abfa403d5");
+      for (x = 0; x < allPurchases.length; x++)
+      {
+        var purchaseAmount1 = allPurchases[x].amount;
+        var purchaseDate1 = allPurchases[x].purchase_date;
+        var dateDiff = Date.daysBetween(startDate, purchaseDate1);
+        if (dateDiff <= totalDays && dateDiff >= 0)
+        {
+          if (dailyPurchases[dateDiff] != null)
+          {
+            dailyPurchases[dateDiff] = dailyPurchases[dateDiff] + purchaseAmount1;
+            totalPurchaseAmount+= purchaseAmount1;
+          }
+          else
+          {
+           dailyPurchases[dateDiff] = purchaseAmount1;
+           totalPurchaseAmount+= purchaseAmount1;
+         }
+       }
+     }
+     console.log(dailyPurchases);
+   }
+
+   function getTotalSavings() {
+    var currentDays = dailyPurchases.length;
+    var currentIncome = dailySalary*currentDays;
+    currentSavings = currentIncome - totalPurchaseAmount;
+    currentDailySavings = currentSavings/currentDays
+    console.log(currentDailySavings);
+    console.log(dailySavingsGoal);
+  }
+
+  function printData() {
+    if (currentSavings > savingsGoal)
+    {
+      document.getElementById("currentSavings").style.fontSize = "40px";
+      document.getElementById("currentSavings").style.color = "#4169E1"
+      document.getElementById("currentSavings").innerHTML = "GOAL MET!";
+      document.getElementById("currentSavingsNumber").innerHTML = "$" + currentSavings.toFixed(2);
+      document.getElementById("currentSavingsNumber").style.border = "4px solid #4169E1";
+    }
+    else if (currentDailySavings >= dailySavingsGoal)
+    {
+      document.getElementById("currentSavingsNumber").style.border = "4px solid green";
+      document.getElementById("currentSavingsNumber").innerHTML = "$" + currentSavings.toFixed(2);
+    }
+    else if (currentDailySavings >= dailySavingsGoal/2)
+    {
+      document.getElementById("currentSavingsNumber").style.border = "4px solid yellow";
+      document.getElementById("currentSavingsNumber").innerHTML = "$" + currentSavings.toFixed(2);
+    }
+    else
+    {
+      document.getElementById("currentSavingsNumber").style.border = "4px solid red";
+      document.getElementById("currentSavingsNumber").innerHTML = "$" + currentSavings.toFixed(2);
+    }
+    document.getElementById("savingsGoal").innerHTML = "Savings Goal: $" + savingsGoal.toFixed(2);
+    document.getElementById("dailySavingsGoal").innerHTML = "Daily Savings Goal: $" + dailySavingsGoal.toFixed(2);
+    document.getElementById("currentDailySavingsAvg").innerHTML = "Current Daily Savings Average: $" + currentDailySavings.toFixed(2);
+    document.getElementById("dailySpendingLimit").innerHTML = "Daily Spending Limit: $" + (dailySalary - dailySavingsGoal).toFixed(2);
+    document.getElementById("currentDailySpendingAvg").innerHTML = "Current Daily Spending Average: $" + (dailySalary - currentDailySavings).toFixed(2);
+
+    document.getElementById("firstNameLastName").innerHTML = customerFirstName + " " + customerLastName;
+    document.getElementById("username").innerHTML = "Username: " + username;
+    document.getElementById("balance").innerHTML = "Balance: $" + balance.toFixed(2);
+    document.getElementById("biWeeklySalary").innerHTML = "Bi-Weekly Salary: $" + salary.toFixed(2);
+    document.getElementById("dailySalaryAverage").innerHTML = "Daily Salary Average: $" + dailySalary.toFixed(2);
+
+  }
+
+</script>
+</body>
+</html>

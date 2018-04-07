@@ -1,0 +1,139 @@
+html, body {
+	color: white;
+  background: black;
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	font-weight: 100;	
+}
+
+#accountData {
+	position: absolute;
+	top: 8%;
+	left: 10%;
+	text-align-last: right;
+	letter-spacing: 3px;
+	/*font-family: sans-serif;
+	font-style: normal;
+	font-weight: lighter;
+	font-variant: normal;
+	letter-spacing: 3px;
+	font-size: 20px;
+	size: 110px;
+	font-weight: lighter;
+	color: #808080;*/
+	color: white;
+}
+#accountData h4{
+	font-size: 20px;
+	font-family: sans-serif;
+	font-weight: lighter;
+	color: white;
+}
+
+#createGoalForm {
+	position: absolute;	
+	bottom: 20%;
+	left: 2%;
+	text-align: right;
+	font-family: Gruppo, Ariel, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	margin-bottom: 10px;
+	letter-spacing: 3px;
+	size: 110px;
+}
+#createGoalForm, h3 {
+	margin-right: 10px; 
+}
+#paymentForm {
+	position: absolute;	
+	top: 60px;
+	right: 40px;
+	text-align: left;
+	font-family: Gruppo, Ariel, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	font-weight: 100;
+	margin-right: 20px;
+	margin-top: 20px;
+	margin-left: 0px;
+	margin-bottom: 0px;
+	letter-spacing: 3px;
+}
+input, select {
+	margin: 10px;
+	font-size: 20px;
+}
+#createGoalButton {
+	margin: 10px;
+}
+#purchaseButton {
+	margin-top: 15px;
+}
+#centerPage {
+	float: center;
+	text-align: center;
+	font-family: Gruppo, Ariel, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	line-height: 27px;
+	padding-top: 10px;
+	letter-spacing: 5px;
+	margin-bottom: 20px;
+	margin-right: 0px;
+	margin-left: 0px;
+	size: 100px;
+}
+#webTitle {
+	color: #4169E1;
+	margin-bottom: 60px;
+}
+#currentSavings {
+	position: absolute;
+	top: 15%;
+	right: 50%;
+	transform: translateX(50%) translateY(-50%);
+	vertical-align: center;
+	font-family: Gruppo, Ariel, sans-serif;
+	font-style: normal;
+	font-variant: normal;
+	letter-spacing: 3px;
+	color: white;
+}
+#currentSavingsNumber {
+	position: absolute;
+	top: 45%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+    height: 300px;
+    width: 300px;
+    line-height: 300px;
+
+    -moz-border-radius: 150px; /* or 50% */
+    border-radius: 150px; /* or 50% */
+
+
+    text-align: center;
+    font-size: 40px;
+}
+#goalData {
+	width: 100%;
+	position: absolute;
+	bottom: -2%;
+	left: 50%;
+	transform: translateX(-50%) translateY(-50%);
+	letter-spacing: 3px;
+	color: #808080;
+}
+
+#goalData h4 {
+	text-align: center;
+	margin: 5px;
+	font-size: 25px;
+	font-family: sans-serif;
+	font-weight: lighter;
+	color: white;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+	
+		<input type="text" name="user" id="user">
+	<button type="submit">Login</button>
+	<p id="status"></p>
+<script type="text/javascript">
+	var url = "http://api.reimaginebanking.com/accounts?type=Checking&key=d2e249d455165a2e90f6131d49fe3345";
+	var xhr;
+	var user = "kylel95";
+	var users = [];
+  if(window.XMLHttpRequest){
+    xhr = new XMLHttpRequest();
+
+  }
+  else{
+    xhr = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xhr.open('GET', url, true);
+  xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xhr.onreadystatechange = function()
+  {
+  	if(xhr.status == 200 && xhr.readyState == 4){
+  		 var arr = xhr.responseText;
+  		 arr = JSON.parse(arr);
+  		 var length = Object.keys(arr).length;
+  		 for(var i = 0; i < length; i++){
+  		 	var nickname = arr[i]['nickname'];
+  		 	users.push(nickname);
+  		 	if(user == nickname){
+  		 		var account_url = "http://api.reimaginebanking.com/accounts/" + arr[i]['_id'] + "?key=d2e249d455165a2e90f6131d49fe3345"; //the account to login to
+  		 		//make _id global
+  		 		//window.location = account_url;
+  		 	}
+
+  		 }
+  	}
+  }
+  xhr.send();
+  $("button").click(function(){
+ if(users.indexOf(document.getElementById("user").value) == -1){
+
+  		 	console.log("Invalid username");
+  		 }
+  		 else{
+  		 	console.clear();
+  		 	console.log("correct username");
+  		 }
+  })
+$(document).keypress(function(e){
+	if(e.keyCode == 13){
+ if(users.indexOf(document.getElementById("user").value) == -1){
+  		 	console.log("Invalid username");
+  		 }
+  		 else{
+  		 	console.clear();
+  		 	console.log("correct username");
+  		 }
+	}
+})
+</script>
+</body>
+</html>
